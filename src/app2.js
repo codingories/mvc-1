@@ -15,15 +15,21 @@ const m = new Model({
         Object.assign(m.data,data) // 把data的所有属性赋值给m.data
         // m更新了就会触发，我更新了这句话
         eventBus.trigger('m:updated')
-        localStorage.setItem('index',m.data.index)
+        localStorage.setItem('app2.index',m.data.index)
     },
 })
 
 
-const v = {
+
+
+
+
+// const $element = $(html).appendTo($('body>.page'))
+
+const view = {
     el:null,
     html:(index)=>{
-    return `
+        return `
       <div>
         <ol class="tab-bar">
           <li class="${index===0 ? 'selected':''}" data-index="0"><span>11111</span></li>
@@ -36,26 +42,16 @@ const v = {
       </div>
     `
     },
-    init(el){
-        v.el = $(el)
-    },
     render(index){
-        if (v.el.children.length !== 0) v.el.empty();
-        $(v.html(index)).appendTo(v.el)
-    }
-}
-
-
-
-// const $element = $(html).appendTo($('body>.page'))
-
-const c = {
+        if (view.el.children.length !== 0) view.el.empty();
+        $(view.html(index)).appendTo(view.el)
+    },
     init(container){
-        v.init(container)
-        v.render(m.data.index) // view = render(data)
-        c.autoBindEvents()
+        view.el = $(container)
+        view.render(m.data.index) // view = render(data)
+        view.autoBindEvents()
         eventBus.on('m:updated',()=>{
-            v.render(m.data.index)
+            view.render(m.data.index)
         })
     },
 
@@ -67,12 +63,12 @@ const c = {
         m.update({index:index})
     },
     autoBindEvents(){
-        for(let key in c.events){
-            const value = c[c.events[key]]
+        for(let key in view.events){
+            const value = view[view.events[key]]
             const spaceIndex = key.indexOf(' ')
             const part1 = key.slice(0, spaceIndex)
             const part2 = key.slice(spaceIndex + 1)
-            v.el.on(part1,part2,value)
+            view.el.on(part1,part2,value)
         }
     }
 }
@@ -82,4 +78,4 @@ const $tabBar = $("#app2 .tab-bar");
 const $tabContent = $("#app2 .tab-content");
 
 
-export default c
+export default view
