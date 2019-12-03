@@ -1,27 +1,23 @@
 import "./app2.css";
 import $ from "jquery";
+import Model from "./base/Model";
 
 
 const eventBus = $({})
 
 
 const localKey = "app2.index"
-const m = {
+const m = new Model({
     data : {
         index : parseInt(localStorage.getItem(localKey)) || 0
     },
-    create(){},
-    delete(){},
     update(data){
         Object.assign(m.data,data) // 把data的所有属性赋值给m.data
         // m更新了就会触发，我更新了这句话
         eventBus.trigger('m:updated')
         localStorage.setItem('index',m.data.index)
     },
-    get(){
-
-    }
-}
+})
 
 
 const v = {
@@ -40,8 +36,8 @@ const v = {
       </div>
     `
     },
-    init(container){
-        v.el = $(container)
+    init(el){
+        v.el = $(el)
     },
     render(index){
         if (v.el.children.length !== 0) v.el.empty();
